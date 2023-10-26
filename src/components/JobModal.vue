@@ -48,7 +48,7 @@ import { computed, reactive, onMounted, ref, popScopeId, watchEffect, onUnmounte
 import { Job } from "../models/Job";
 import Pop from "../utils/Pop";
 import { jobsService } from "../services/JobsService";
-import bootstrap from "bootstrap";
+import { Modal } from "bootstrap";
 export default {
   props: {
     jobId: { type: String }
@@ -59,11 +59,11 @@ export default {
     async function handleSubmit() {
       if (props.jobId) {
         await jobsService.updateJob(editable.value)
-        bootstrap.Modal.getOrCreateInstance('jobModal').hide()
+        Modal.getOrCreateInstance('#jobModal').hide()
         Pop.success('Job Updated!')
       } else {
         await jobsService.createJob(editable.value)
-        bootstrap.Modal.getOrCreateInstance('jobModal').hide()
+        Modal.getOrCreateInstance('#jobModal').hide()
         Pop.success('Job Created!')
       }
     }
