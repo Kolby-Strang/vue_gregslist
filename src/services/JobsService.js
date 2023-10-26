@@ -27,6 +27,10 @@ class JobsService {
     logger.log('UPDATE JOB', res.data)
     AppState.activeJob = new Job(res.data)
   }
+  async destroyJob(jobId) {
+    const res = await api.delete('api/jobs/' + jobId)
+    logger.log(res.data)
+  }
 
   clearData() {
     AppState.activeJob = null

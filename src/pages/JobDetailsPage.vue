@@ -15,7 +15,10 @@
                     <p>Part time</p>
                 </div>
             </div>
-            <button class="btn btn-primary mx-3" data-bs-toggle="modal" data-bs-target="#jobModal">Edit a Job</button>
+            <div v-if="AppState.account.id == job.creator.id">
+                <button class="btn btn-primary mx-3" data-bs-toggle="modal" data-bs-target="#jobModal">Edit a Job</button>
+                <button @click="destroyJob()" class="btn btn-danger mx-3">Delete Job</button>
+            </div>
         </div>
     </div>
     <div v-else class="container-fluid">
@@ -30,24 +33,33 @@
 
 
 <script>
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { AppState } from '../AppState';
 import { computed, onMounted } from 'vue';
 import { jobsService } from "../services/JobsService";
 import JobModal from "../components/JobModal.vue";
+import Pop from "../utils/Pop";
 export default {
     setup() {
         const route = useRoute();
+        const router = useRouter()
         const job = computed(() => AppState.activeJob);
         const jobId = route.params.jobId;
         async function getJobById() {
             await jobsService.getJobById(jobId);
         }
+        async function destroyJob() {
+            const confirmed = await Pop.confirm()
+            if (!confirmed) return
+            jobsService.destroyJob(job.value.id)
+            router.push({ name: 'Jobs' })
+            Pop.success('Job Listing Removed')
+        }
         onMounted(() => {
             jobsService.clearData();
             getJobById();
         });
-        return { job, jobId };
+        return { job, jobId, destroyJob, AppState };
     },
     components: { JobModal }
 };
