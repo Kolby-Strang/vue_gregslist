@@ -28,6 +28,7 @@ export default {
             await jobsService.getJobs();
         }
         onMounted(() => {
+            jobsService.clearData()
             getJobs();
         });
         return {

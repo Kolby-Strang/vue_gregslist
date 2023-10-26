@@ -15,6 +15,7 @@
                     <p>Part time</p>
                 </div>
             </div>
+            <button class="btn btn-primary mx-3" data-bs-toggle="modal" data-bs-target="#jobModal">Edit a Job</button>
         </div>
     </div>
     <div v-else class="container-fluid">
@@ -24,31 +25,31 @@
             </div>
         </div>
     </div>
+    <JobModal :jobId="jobId" />
 </template>
 
 
 <script>
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "vue-router";
 import { AppState } from '../AppState';
-import { computed, reactive, onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 import { jobsService } from "../services/JobsService";
+import JobModal from "../components/JobModal.vue";
 export default {
     setup() {
         const route = useRoute();
-        const router = useRouter();
-        const job = computed(() => AppState.activeJob)
-
+        const job = computed(() => AppState.activeJob);
+        const jobId = route.params.jobId;
         async function getJobById() {
-            const jobId = route.params.jobId
-            await jobsService.getJobById(jobId)
+            await jobsService.getJobById(jobId);
         }
-
         onMounted(() => {
-            jobsService.clearData()
-            getJobById()
-        })
-        return { job }
-    }
+            jobsService.clearData();
+            getJobById();
+        });
+        return { job, jobId };
+    },
+    components: { JobModal }
 };
 </script>
 
